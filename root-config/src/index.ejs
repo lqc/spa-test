@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="default-src *  data: blob: 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * data: blob: 'unsafe-inline'; font-src * data: blob: 'unsafe-inline';">
+
+  <title>Root Config</title>
+
+  <!--
+    Remove this if you only support browsers that support async/await.
+    This is needed by babel to share largeish helper code for compiling async/await in older
+    browsers. More information at https://github.com/single-spa/create-single-spa/issues/112
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.5/runtime.min.js"></script>
+  <!--
+    This CSP allows any SSL-enabled host, but you should limit these directives further to increase your app's security.
+    Learn more about CSP policies at https://content-security-policy.com/#directive
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https:; object-src 'none';">
+  <meta name="importmap-type" content="systemjs-importmap" />
+  <!-- If you wish to turn off import-map-overrides for specific environments (prod), uncomment the line below -->
+  <!-- More info at https://github.com/joeldenning/import-map-overrides/blob/master/docs/configuration.md#domain-list -->
+  <!-- <meta name="import-map-overrides-domains" content="denylist:prod.example.com" /> -->
+
+  <!-- Shared dependencies go into this import map. Your shared dependencies must be of one of the following formats:
+
+    1. System.register (preferred when possible) - https://github.com/systemjs/systemjs/blob/master/docs/system-register.md
+    2. UMD - https://github.com/umdjs/umd
+    3. Global variable
+
+    More information about shared dependencies can be found at https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
+  -->
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "@angular/core": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular__core@11.2.7/system/es2015/ivy/angular-core.min.js",
+        "@angular/common": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular__common@11.2.7/system/es2015/ivy/angular-common.min.js",
+        "@angular/router": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular__router@11.2.7/system/es2015/ivy/angular-router.min.js",
+        "@angular/platform-browser": "https://cdn.jsdelivr.net/npm/@esm-bundle/angular__platform-browser@11.2.7/system/es2015/ivy/angular-platform-browser.min.js",
+        "rxjs": "https://cdn.jsdelivr.net/npm/@esm-bundle/rxjs/system/es2015/rxjs.min.js",
+        "rxjs/operators": "https://cdn.jsdelivr.net/npm/@esm-bundle/rxjs/system/es2015/rxjs-operators.min.js",
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js",
+        "single-spa-angular": "https://cdn.jsdelivr.net/npm/single-spa-angular@4.9.2/bundles/single-spa-angular.umd.min.js",
+        "@cxone/app1": "http://localhost:4200/main.js",
+        "@cxone/app2": "http://localhost:4202/main.js"
+      }
+    }
+  </script>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.5.5/lib/system/single-spa.min.js" as="script" crossorigin="anonymous">
+
+  <!-- Add your organization's prod import map URL to this script's src  -->
+  <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
+
+  <% if (isLocal) { %>
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "@blah/root-config": "//localhost:9000/blah-root-config.js"
+      }
+    }
+  </script>
+  <% } %>
+
+  <!--
+    If you need to support Angular applications, uncomment the script tag below to ensure only one instance of ZoneJS is loaded
+    Learn more about why at https://single-spa.js.org/docs/ecosystem-angular/#zonejs
+  -->
+   <script src="https://cdn.jsdelivr.net/npm/zone.js@0.10.3/dist/zone.min.js"></script>
+
+  <% if (isLocal) { %>
+  <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@1.16.0/dist/import-map-overrides.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.4.0/dist/system.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.4.0/dist/extras/amd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.4.0/dist/extras/named-exports.js"></script>
+  <% } else { %>
+  <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@1.16.0/dist/import-map-overrides.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.4.0/dist/system.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.4.0/dist/extras/amd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.4.0/dist/extras/named-exports.min.js"></script>
+  <% } %>
+
+  <style>
+    #single-spa-application\:app1 { background: red;}
+    #single-spa-application\:app2 { background: green;}
+  </style>
+</head>
+<body>
+  <main>
+    <a href="/app1" onclick="singleSpaNavigate(event)">App1</a> | <a href="/app2" onclick="singleSpaNavigate(event)">App2</a>
+    <div id="single-spa-application:app1"></div>
+    <div id="single-spa-application:app2"></div>
+  </main>
+  <script>
+    System.import('@blah/root-config');
+  </script>
+  <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
+</body>
+</html>
+
+
