@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -30,7 +33,7 @@
             "customWebpackConfig": {
               "path": "extra-webpack.config.js",
               "libraryName": "my-app",
-              "libraryTarget": "umd"
+              "libraryTarget": "system"
             }
           },
           "configurations": {

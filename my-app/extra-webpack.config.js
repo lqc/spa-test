@@ -10,7 +10,6 @@ module.exports = (config, options) => {
   //   systemjsModuleName: "@cxone/app1"
   // }));
 
-
   singleSpaWebpackConfig.externals.push(
     "rxjs",
     "rxjs/operators",
